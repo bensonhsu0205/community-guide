@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>心之所向 · 申請導引</title>
+<style>
+/* ===== 設計變數 ===== */
+:root{
+  --navy:#1A3C5E;      /* 主色 深藍綠 */
+  --navy-soft:#2c5478;
+  --orange:#E87C3E;    /* 輔色 暖橙 */
+  --orange-soft:#f4a06b;
+  --cream:#F8F6F2;     /* 底色 米白 */
+  --ink:#2b2b2b;
+  --grey:#8a8a8a;
+  --line:#e7e2d8;
+  --green:#3a9e6e;
+  --radius:16px;
+  --shadow:0 4px 18px rgba(26,60,94,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--cream);color:var(--ink);
+  font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif;
+  line-height:1.6;font-size:16px}
+body{padding-bottom:74px}
+.app{max-width:520px;margin:0 auto;min-height:100vh;position:relative}
+
+/* ===== 頂部 ===== */
+header.top{background:var(--navy);color:#fff;padding:18px 20px 16px;
+  position:sticky;top:0;z-index:50;box-shadow:var(--shadow)}
+.top .brand{font-size:19px;font-weight:800;letter-spacing:.5px}
+.top .sub{font-size:12.5px;opacity:.8;margin-top:2px}
+.top-row{display:flex;align-items:center;gap:10px}
+.back-btn{background:rgba(255,255,255,.15);border:none;color:#fff;
+  width:34px;height:34px;border-radius:10px;font-size:18px;cursor:pointer;
+  display:none;align-items:center;justify-content:center;flex:0 0 auto}
+.back-btn.show{display:flex}
+
+/* ===== 通用 ===== */
+.wrap{padding:18px 16px 30px}
+.section-title{font-size:15px;font-weight:800;color:var(--navy);
+  margin:4px 0 12px;display:flex;align-items:center;gap:8px}
+.section-title::before{content:"";width:5px;height:18px;background:var(--orange);
+  border-radius:3px}
+.lead{font-size:14px;color:var(--grey);margin-bottom:18px}
+.hide{display:none!important}
+
+/* 卡片 */
+.card{background:#fff;border-radius:var(--radius);padding:18px;
+  box-shadow:var(--shadow);margin-bottom:14px;border:1px solid var(--line)}
+
+/* 大選擇按鈕 */
+.pick-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pick{background:#fff;border:2px solid var(--line);border-radius:var(--radius);
+  padding:22px 14px;text-align:center;cursor:pointer;transition:.18s;box-shadow:var(--shadow)}
+.pick:active{transform:scale(.97)}
+.pick.on{border-color:var(--orange);background:#fff7f0}
+.pick .ico{font-size:34px;line-height:1}
+.pick .t{font-weight:800;font-size:16px;margin-top:8px;color:var(--navy)}
+.pick .d{font-size:12px;color:var(--grey);margin-top:3px}
+
+.btn{display:block;width:100%;background:var(--orange);color:#fff;border:none;
+  padding:15px;border-radius:14px;font-size:16px;font-weight:800;cursor:pointer;
+  box-shadow:0 4px 14px rgba(232,124,62,.35);transition:.15s}
+.btn:active{transform:scale(.98)}
+.btn:disabled{background:#d9d3c8;box-shadow:none;cursor:not-allowed}
+.btn.ghost{background:#fff;color:var(--navy);border:2px solid var(--navy);box-shadow:none}
+.btn.sm{padding:11px;font-size:14px}
+
+/* 功能導覽磚 */
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+.tile{background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 12px;text-align:center;cursor:pointer;box-shadow:var(--shadow);transition:.15s}
+.tile:active{transform:scale(.97)}
+.tile .ico{font-size:28px}
+.tile .t{font-weight:800;color:var(--navy);margin-top:6px;font-size:14.5px}
+.tile .d{font-size:11.5px;color:var(--grey);margin-top:2px}
+
+/* 待辦清單 */
+.todo{list-style:none}
+.todo li{display:flex;gap:12px;align-items:flex-start;padding:14px 4px;
+  border-bottom:1px dashed var(--line);cursor:pointer}
+.todo li:last-child{border-bottom:none}
+.chk{flex:0 0 auto;width:26px;height:26px;border:2px solid var(--orange);
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:900;font-size:15px;transition:.15s;margin-top:1px}
+.todo li.done .chk{background:var(--green);border-color:var(--green)}
+.todo .txt{flex:1}
+.todo .txt .h{font-weight:700;font-size:15px;transition:.15s}
+.todo .txt .s{font-size:12.5px;color:var(--grey);margin-top:2px}
+.todo li.done .txt .h{text-decoration:line-through;color:var(--grey)}
+.todo li.done .txt .s{text-decoration:line-through}
+.progress-bar{height:10px;background:var(--line);border-radius:6px;overflow:hidden;margin:6px 0 4px}
+.progress-bar>i{display:block;height:100%;background:var(--green);width:0;transition:.4s}
+.progress-label{font-size:13px;color:var(--navy);font-weight:700;text-align:right}
+.done-banner{background:#eaf7f0;border:1px solid var(--green);color:var(--green);
+  border-radius:12px;padding:12px;text-align:center;font-weight:800;margin-top:12px}
+
+/* 費用大數字 */
+.fee{display:flex;align-items:center;justify-content:space-between;
+  background:var(--navy);color:#fff;border-radius:14px;padding:16px 18px;margin-bottom:12px}
+.fee.alt{background:var(--orange);box-shadow:0 4px 14px rgba(232,124,62,.3)}
+.fee .lbl{font-size:14px;font-weight:700}
+.fee .lbl small{display:block;font-size:11.5px;opacity:.8;font-weight:400}
+.fee .num{font-size:30px;font-weight:900;letter-spacing:-.5px}
+.fee .num small{font-size:14px;font-weight:700;opacity:.9}
+.refund-note{font-size:12.5px;color:var(--grey);background:#fff8ef;
+  border:1px dashed var(--orange);border-radius:10px;padding:10px 12px;margin-top:4px}
+
+/* 電梯查詢 */
+.bld-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.bld{background:#fff;border:2px solid var(--line);border-radius:12px;padding:14px 0;
+  text-align:center;font-weight:800;font-size:18px;color:var(--navy);cursor:pointer;transition:.15s}
+.bld:active{transform:scale(.95)}
+.bld.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.phase-tag{font-size:11px;display:block;font-weight:600;opacity:.7;margin-top:2px}
+.ele-result{margin-top:14px;text-align:center}
+.ele-result .ele-num{display:inline-block;background:var(--orange);color:#fff;
+  font-size:30px;font-weight:900;padding:8px 20px;border-radius:14px;margin:4px}
+.ele-result .cap{font-size:13px;color:var(--grey);margin-bottom:6px}
+
+/* 週曆 */
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:4px}
+.cal .d{border-radius:10px;padding:8px 2px;text-align:center;font-size:12px;font-weight:700}
+.cal .d .dn{font-size:13px;display:block;margin-bottom:3px}
+.cal .work{background:#eaf2f8;color:var(--navy)}
+.cal .sat{background:#fff3e7;color:var(--orange)}
+.cal .sun{background:#fbe9e7;color:#c0392b}
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;font-size:12.5px}
+.legend span{display:flex;align-items:center;gap:5px}
+.dot{width:12px;height:12px;border-radius:4px;display:inline-block}
+.time-row{display:flex;justify-content:space-between;padding:10px 2px;
+  border-bottom:1px dashed var(--line);font-size:14px}
+.time-row:last-child{border:none}
+.time-row b{color:var(--navy)}
+.time-row .v{font-weight:800;color:var(--orange)}
+.warn{background:#fbe9e7;border:1px solid #e6a99f;color:#c0392b;border-radius:10px;
+  padding:10px 12px;font-size:13px;font-weight:700;margin-top:10px}
+
+/* QA 搜尋 */
+.search-box{display:flex;gap:8px;margin-bottom:6px}
+.search-box input{flex:1;border:2px solid var(--line);border-radius:12px;
+  padding:13px 14px;font-size:15px;outline:none}
+.search-box input:focus{border-color:var(--orange)}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 6px}
+.chip{background:#fff;border:1.5px solid var(--line);border-radius:20px;
+  padding:6px 13px;font-size:13px;color:var(--navy);cursor:pointer;font-weight:600}
+.chip.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.qa-item{background:#fff;border:1px solid var(--line);border-radius:12px;
+  margin-bottom:10px;overflow:hidden;box-shadow:var(--shadow)}
+.qa-q{padding:14px;font-weight:700;font-size:14.5px;cursor:pointer;
+  display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.qa-q .arrow{color:var(--orange);font-weight:900;transition:.2s;flex:0 0 auto}
+.qa-item.open .qa-q .arrow{transform:rotate(180deg)}
+.qa-a{padding:0 14px;max-height:0;overflow:hidden;transition:.25s;color:#444;font-size:14px}
+.qa-item.open .qa-a{padding:0 14px 14px;max-height:400px}
+.qa-cat{display:inline-block;font-size:11px;background:#fff3e7;color:var(--orange);
+  padding:2px 9px;border-radius:10px;font-weight:700;margin-top:8px}
+.empty{text-align:center;color:var(--grey);padding:30px 10px;font-size:14px}
+
+/* 後台 */
+.admin-link{text-align:center;padding:20px;font-size:12px;color:#c3bdb0;cursor:pointer}
+.modal{position:fixed;inset:0;background:rgba(26,60,94,.55);z-index:100;
+  display:none;align-items:center;justify-content:center;padding:20px}
+.modal.show{display:flex}
+.modal .box{background:#fff;border-radius:18px;padding:22px;max-width:440px;width:100%;
+  max-height:90vh;overflow:auto}
+.modal h3{color:var(--navy);font-size:18px;margin-bottom:6px}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:13px;font-weight:700;color:var(--navy);margin-bottom:5px}
+.field input,.field textarea,.field select{width:100%;border:2px solid var(--line);
+  border-radius:10px;padding:11px;font-size:14px;outline:none;font-family:inherit}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--orange)}
+.field textarea{min-height:80px;resize:vertical}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* 後台分頁 */
+.tabs{display:flex;gap:6px;margin-bottom:14px;background:#eee9df;padding:5px;border-radius:12px}
+.tabs button{flex:1;border:none;background:transparent;padding:9px;border-radius:9px;
+  font-size:13.5px;font-weight:700;color:var(--grey);cursor:pointer}
+.tabs button.on{background:#fff;color:var(--navy);box-shadow:var(--shadow)}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stat{background:var(--navy);color:#fff;border-radius:14px;padding:16px;text-align:center}
+.stat .n{font-size:30px;font-weight:900}
+.stat .l{font-size:12px;opacity:.85}
+.admin-qa{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:9px}
+.admin-qa .q{font-weight:700;font-size:14px}
+.admin-qa .meta{font-size:11.5px;color:var(--grey);margin-top:4px}
+.admin-qa .acts{display:flex;gap:8px;margin-top:9px}
+.admin-qa .acts button{flex:1;border:none;border-radius:8px;padding:8px;font-size:13px;
+  font-weight:700;cursor:pointer}
+.act-edit{background:#eaf2f8;color:var(--navy)}
+.act-del{background:#fbe9e7;color:#c0392b}
+.toast{position:fixed;left:50%;bottom:80px;transform:translateX(-50%);
+  background:var(--navy);color:#fff;padding:12px 20px;border-radius:30px;font-size:14px;
+  font-weight:700;z-index:200;opacity:0;transition:.3s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+.src-pick{display:flex;gap:8px;margin-bottom:12px}
+.src-pick button{flex:1;border:2px solid var(--line);background:#fff;border-radius:10px;
+  padding:10px 4px;font-size:13px;font-weight:700;color:var(--navy);cursor:pointer}
+.src-pick button.on{border-color:var(--orange);background:#fff7f0}
+.mini-note{font-size:11.5px;color:var(--grey);margin-top:4px}
+.preview-img{max-width:100%;border-radius:10px;margin-top:8px;display:none}
+.rec-on{color:#c0392b!important;border-color:#c0392b!important}
+.footer-note{font-size:11px;color:#c3bdb0;text-align:center;padding:0 20px 10px}
+/* 底部導覽列 */
+.bottomnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;
+  max-width:520px;background:#fff;border-top:1px solid var(--line);display:flex;z-index:60;
+  box-shadow:0 -3px 14px rgba(26,60,94,.08)}
+.bottomnav button{flex:1;border:none;background:none;padding:8px 2px 9px;font-size:11px;
+  color:var(--grey);font-weight:700;cursor:pointer;display:flex;flex-direction:column;
+  align-items:center;gap:2px;transition:.15s}
+.bottomnav button .bi{font-size:21px;line-height:1}
+.bottomnav button.on{color:var(--orange)}
+.bottomnav button.on .bi{transform:translateY(-1px)}
+.bottomnav.hide{display:none}
+</style>
+</head>
+<body>
+<div class="app">
+
+<header class="top">
+  <div class="top-row">
+    <button class="back-btn" id="backBtn" onclick="goBack()">‹</button>
+    <div>
+      <div class="brand">心之所向 · 申請導引</div>
+      <div class="sub" id="topSub">裝潢施工 · 搬家申請 自助小幫手</div>
+    </div>
+  </div>
+</header>
+
+<!-- ========== 首頁：選申請類型 ========== -->
+<section id="view-home" class="wrap">
+  <div class="lead">您好 👋 想辦什麼呢？選一個開始，我一步步帶您完成。</div>
+  <div class="pick-grid">
+    <div class="pick" onclick="chooseType('reno')">
+      <div class="ico">🔨</div><div class="t">裝潢施工</div><div class="d">室內裝修 / 工程</div>
+    </div>
+    <div class="pick" onclick="chooseType('move')">
+      <div class="ico">📦</div><div class="t">搬家申請</div><div class="d">搬入 / 搬出</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 選身份 ========== -->
+<section id="view-identity" class="wrap hide">
+  <div class="section-title" id="idTitle">請問您的身份是？</div>
+  <div class="lead">不同身份的提醒會稍微不一樣，選好後清單會幫您客製。</div>
+  <div class="pick-grid">
+    <div class="pick" onclick="chooseIdentity('resident')">
+      <div class="ico">🏠</div><div class="t">住戶</div><div class="d">本人 / 屋主家人</div>
+    </div>
+    <div class="pick" onclick="chooseIdentity('vendor')">
+      <div class="ico">👷</div><div class="t">設計師 / 廠商</div><div class="d">承攬施工方</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 功能總覽 ========== -->
+<section id="view-dashboard" class="wrap hide">
+  <div class="card" style="background:var(--navy);color:#fff;border:none">
+    <div style="font-size:13px;opacity:.85" id="dashTag">裝潢施工 · 住戶</div>
+    <div style="font-size:19px;font-weight:800;margin-top:2px" id="dashTitle">您的辦理進度</div>
+    <div class="progress-bar" style="background:rgba(255,255,255,.25)"><i id="dashBar"></i></div>
+    <div style="font-size:13px;opacity:.9" id="dashProg">尚未開始</div>
+  </div>
+  <div class="tiles">
+    <div class="tile" onclick="show('view-checklist')"><div class="ico">✅</div><div class="t">辦理清單</div><div class="d">一步步打勾</div></div>
+    <div class="tile" onclick="show('view-fee')"><div class="ico">💰</div><div class="t">費用一覽</div><div class="d">保證金/雜費</div></div>
+    <div class="tile" onclick="show('view-elevator')"><div class="ico">🛗</div><div class="t">電梯查詢</div><div class="d">A–K 棟</div></div>
+    <div class="tile" onclick="show('view-time')"><div class="ico">🕘</div><div class="t">施工時間</div><div class="d">週曆規則</div></div>
+    <div class="tile" onclick="show('view-qa')" style="grid-column:1/3"><div class="ico">💬</div><div class="t">常見問題搜尋</div><div class="d">打關鍵字找答案</div></div>
+  </div>
+</section>
+
+<!-- ========== 待辦清單 ========== -->
+<section id="view-checklist" class="wrap hide">
+  <div class="section-title" id="clTitle">辦理清單</div>
+  <div class="lead">完成一項點一下打勾，進度會自動記住 ✨</div>
+  <div class="card">
+    <div class="progress-bar"><i id="clBar"></i></div>
+    <div class="progress-label" id="clLabel">0 / 0 完成</div>
+    <ul class="todo" id="clList"></ul>
+    <div class="done-banner hide" id="clDone">🎉 全部完成！可以準備送件囉</div>
+  </div>
+</section>
+
+<!-- ========== 費用一覽 ========== -->
+<section id="view-fee" class="wrap hide">
+  <div class="section-title">費用一覽</div>
+  <div class="lead" id="feeLead"></div>
+  <div id="feeList"></div>
+  <div class="refund-note" id="feeNote"></div>
+</section>
+
+<!-- ========== 電梯查詢 ========== -->
+<section id="view-elevator" class="wrap hide">
+  <div class="section-title">電梯查詢</div>
+  <div class="lead">點您的棟別，看可使用的指定電梯（搬運 / 施工請走指定電梯）。</div>
+  <div class="card">
+    <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:8px">三期</div>
+    <div class="bld-grid" id="bldP3"></div>
+    <div style="font-size:13px;font-weight:700;color:var(--navy);margin:14px 0 8px">四期</div>
+    <div class="bld-grid" id="bldP4"></div>
+    <div class="ele-result hide" id="eleResult"></div>
+  </div>
+</section>
+
+<!-- ========== 施工時間 ========== -->
+<section id="view-time" class="wrap hide">
+  <div class="section-title">施工時間規則</div>
+  <div class="lead">綠＝可施工、橙＝週六需申請無聲施工、紅＝禁止。</div>
+  <div class="card">
+    <div class="cal" id="calGrid"></div>
+    <div class="legend">
+      <span><i class="dot" style="background:#eaf2f8;border:1px solid #cdd"></i>平日可施工</span>
+      <span><i class="dot" style="background:#fff3e7;border:1px solid #f0c"></i>週六無聲(申請)</span>
+      <span><i class="dot" style="background:#fbe9e7;border:1px solid #e99"></i>假日禁止</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="time-row"><b>平日一般施工</b><span class="v">08–12 · 13–17</span></div>
+    <div class="time-row"><b>高噪音施工</b><span class="v">09–12 · 14–17</span></div>
+    <div class="time-row"><b>週六（需申請）</b><span class="v">無聲施工</span></div>
+    <div class="time-row"><b>國定假日 / 週日</b><span class="v" style="color:#c0392b">禁止施工</span></div>
+    <div class="warn">⚠️ 每日 17:30 前務必清場離場，請預留收尾時間。</div>
+  </div>
+</section>
+
+<!-- ========== QA 搜尋 ========== -->
+<section id="view-qa" class="wrap hide">
+  <div class="section-title">常見問題搜尋</div>
+  <div class="lead">打個關鍵字（例：保證金、電梯、週六），馬上找答案。</div>
+  <div class="search-box">
+    <input id="qaSearch" placeholder="輸入關鍵字…" oninput="renderQA()">
+  </div>
+  <div class="chips" id="qaChips"></div>
+  <div id="qaList"></div>
+</section>
+
+<!-- ========== 後台入口 ========== -->
+<div class="admin-link" onclick="openAdminGate()">· 管理後台 ·</div>
+<div class="footer-note">心之所向社區 · 申請導引系統 v1（雲端同步）</div>
+
+</div><!-- /app -->
+
+<!-- ===== 底部導覽列（功能頁顯示） ===== -->
+<nav class="bottomnav hide" id="bottomnav">
+  <button data-v="view-checklist" onclick="navTo('view-checklist')"><span class="bi">✅</span>清單</button>
+  <button data-v="view-fee" onclick="navTo('view-fee')"><span class="bi">💰</span>費用</button>
+  <button data-v="view-elevator" onclick="navTo('view-elevator')"><span class="bi">🛗</span>電梯</button>
+  <button data-v="view-time" onclick="navTo('view-time')"><span class="bi">🕘</span>時間</button>
+  <button data-v="view-qa" onclick="navTo('view-qa')"><span class="bi">💬</span>問答</button>
+</nav>
+
+<!-- ===== 後台登入 ===== -->
+<div class="modal" id="gate">
+  <div class="box">
+    <h3>🔒 後台登入</h3>
+    <div class="lead" style="margin:8px 0 14px;font-size:13px">請輸入管理密碼</div>
+    <div class="field"><input type="password" id="gatePw" placeholder="密碼" onkeydown="if(event.key==='Enter')tryLogin()"></div>
+    <button class="btn" onclick="tryLogin()">登入</button>
+    <button class="btn ghost sm" style="margin-top:8px" onclick="closeModal('gate')">取消</button>
+  </div>
+</div>
+
+<!-- ===== 後台主畫面 ===== -->
+<div class="modal" id="admin">
+  <div class="box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <h3>⚙️ 管理後台</h3>
+      <button class="btn ghost sm" style="width:auto;padding:7px 14px" onclick="closeModal('admin')">關閉</button>
+    </div>
+    <div class="tabs">
+      <button class="on" id="tab-add" onclick="adminTab('add')">新增QA</button>
+      <button id="tab-manage" onclick="adminTab('manage')">管理QA</button>
+      <button id="tab-stat" onclick="adminTab('stat')">統計</button>
+    </div>
+
+    <!-- 新增 QA -->
+    <div id="pane-add">
+      <div class="src-pick">
+        <button class="on" data-src="手動" onclick="pickSrc(this)">✍️ 手動</button>
+        <button data-src="語音" onclick="pickSrc(this)">🎤 語音</button>
+        <button data-src="截圖" onclick="pickSrc(this)">📷 截圖</button>
+      </div>
+      <div id="srcVoice" class="hide">
+        <button class="btn ghost sm" id="recBtn" onclick="toggleRec()">🎤 開始語音輸入（說出問題）</button>
+        <div class="mini-note">說完會自動填到「問題」欄，可再手動修改。瀏覽器需允許麥克風。</div>
+      </div>
+      <div id="srcShot" class="hide">
+        <div class="field"><label>上傳截圖</label><input type="file" id="shotFile" accept="image/*" onchange="previewShot(this)"></div>
+        <img id="shotPreview" class="preview-img">
+        <div class="mini-note">第一版請看著截圖手動把問題/答案打進下方欄位。AI 自動辨識將於後端版本開放。</div>
+      </div>
+      <div class="field"><label>問題</label><textarea id="fQ" placeholder="例：保證金多少？怎麼退？"></textarea></div>
+      <div class="field"><label>答案</label><textarea id="fA" placeholder="輸入完整回覆內容"></textarea></div>
+      <div class="row2">
+        <div class="field"><label>分類</label>
+          <select id="fCat">
+            <option>裝潢</option><option>搬家</option><option>費用</option>
+            <option>時間</option><option>電梯</option><option>違規</option>
+          </select>
+        </div>
+        <div class="field"><label>社區</label>
+          <select id="fComm"><option>心之所向</option></select>
+        </div>
+      </div>
+      <button class="btn" onclick="saveQA()">儲存 QA</button>
+    </div>
+
+    <!-- 管理 QA -->
+    <div id="pane-manage" class="hide">
+      <div class="field"><input id="adminSearch" placeholder="搜尋題目…" oninput="renderAdminList()"></div>
+      <div id="adminList"></div>
+    </div>
+
+    <!-- 統計 -->
+    <div id="pane-stat" class="hide">
+      <div class="stat-grid">
+        <div class="stat"><div class="n" id="stTotal">0</div><div class="l">QA 總數</div></div>
+        <div class="stat" style="background:var(--orange)"><div class="n" id="stSearch">0</div><div class="l">QA 搜尋總次數</div></div>
+        <div class="stat"><div class="n" id="stFlow">0</div><div class="l">申請流程使用次數</div></div>
+        <div class="stat" style="background:var(--orange)"><div class="n" id="stHot">—</div><div class="l">最熱門問題</div></div>
+      </div>
+      <div class="section-title" style="font-size:14px">各分類熱門搜尋</div>
+      <div id="statList"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Firebase SDK（compat 版，提供全域 firebase 物件） -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+<script>
+/* ============================================================
+   心之所向 申請導引系統 v1
+   儲存：localStorage（單機）。已預留 Firebase 接口（見下方 DB 區）。
+   ============================================================ */
+
+/* ---------- 設定 ---------- */
+const ADMIN_PW = "1688";          // ← 後台密碼，請自行修改
+const COMMUNITY = "心之所向";
+
+/* ---------- 電梯資料（A–K 棟） ---------- */
+const ELEVATORS = {
+  P3:{A:["2","5"],B:["7","9"],C:["11","13"],D:["14","16"],E:["18","20"],F:["22","24"]},
+  P4:{G:["29","31"],H:["33","35"],I:["37","39"],J:["40","42"],K:["44","46"]}
+};
+
+/* ---------- 待辦清單（依類型/身份客製） ---------- */
+const CHECKLISTS = {
+  reno:{
+    resident:[
+      ["填寫裝修申請書","向管理中心索取或下載申請表"],
+      ["繳交裝修保證金 30,000 元","完工驗收無損壞後退還"],
+      ["繳交清潔管理費 1,000 元","裝修期間環境清潔維護費"],
+      ["提供設計師／廠商資料","公司、聯絡人、施工人員名冊"],
+      ["確認施工電梯與時間","查指定電梯、避開禁止時段"],
+      ["購買施工背心 200 元／件","施工人員進出須穿著識別"],
+      ["張貼施工公告","完成後即可開工"]
+    ],
+    vendor:[
+      ["向屋主取得裝修申請書","由屋主或您協助填寫送件"],
+      ["確認保證金已繳（30,000）","由屋主或公司繳納"],
+      ["登記施工人員名冊","所有進場人員需登記"],
+      ["購買施工背心 200 元／件","每位施工人員一件"],
+      ["確認指定施工電梯","依棟別使用，鋪設保護"],
+      ["確認施工時間規範","平日時段、週六需申請、假日禁止"],
+      ["每日 17:30 前清場","收尾與清潔離場"]
+    ]
+  },
+  move:{
+    resident:[
+      ["填寫搬家申請單","告知搬入或搬出日期"],
+      ["繳交搬家保證金 5,000 元","無損壞後退還"],
+      ["預約電梯保護毯 100 元／日","保護電梯內裝"],
+      ["確認搬運指定電梯","依棟別使用指定電梯"],
+      ["預約搬家時段","避開上下班尖峰，禮讓住戶"],
+      ["搬運後通知驗收","管理中心檢查後退保證金"]
+    ],
+    vendor:[
+      ["向住戶確認申請已送件","搬家單需由住戶申請"],
+      ["確認保證金已繳（5,000）",""],
+      ["租用電梯保護毯 100 元／日","保護電梯內裝"],
+      ["使用指定電梯搬運","依棟別，勿佔用住戶電梯"],
+      ["保護公共區域","牆面、地面避免刮損"],
+      ["搬運後清潔離場","配合管理中心驗收"]
+    ]
+  }
+};
+
+/* ---------- 費用資料 ---------- */
+const FEES = {
+  reno:{
+    lead:"裝潢施工相關費用如下，保證金完工驗收無損壞後可全額退還。",
+    items:[
+      {lbl:"裝修保證金",sub:"完工驗收後退還",num:"30,000",unit:"元",alt:false},
+      {lbl:"清潔管理費",sub:"裝修期間環境維護",num:"1,000",unit:"元",alt:true},
+      {lbl:"施工背心",sub:"每位施工人員一件",num:"200",unit:"元／件",alt:false}
+    ],
+    note:"💡 保證金為「可退」費用，完工後經驗收公共區域無損壞即退還；清潔費與背心為一次性費用。"
+  },
+  move:{
+    lead:"搬家相關費用如下，保證金無損壞後可全額退還。",
+    items:[
+      {lbl:"搬家保證金",sub:"無損壞後退還",num:"5,000",unit:"元",alt:false},
+      {lbl:"電梯保護毯",sub:"保護電梯內裝",num:"100",unit:"元／日",alt:true}
+    ],
+    note:"💡 保證金為「可退」費用；保護毯依使用天數計費。建議搬運集中於同一日以節省費用。"
+  }
+};
+
+/* ---------- 初始 10 筆常見問題 ---------- */
+const SEED_QA = [
+  {q:"裝修保證金要多少？什麼時候退？",a:"裝修保證金為 30,000 元，於開工前繳交。完工後經管理中心驗收，確認公共區域（電梯、走道、牆面等）無損壞即全額退還。",cat:"費用",src:"手動"},
+  {q:"搬家保證金多少錢？",a:"搬家保證金為 5,000 元，搬運完成驗收無損壞後退還。",cat:"費用",src:"手動"},
+  {q:"清潔管理費是什麼？要繳多少？",a:"裝修期間需繳清潔管理費 1,000 元，用於公共環境清潔維護，為一次性費用、不退還。",cat:"費用",src:"手動"},
+  {q:"施工背心怎麼買？多少錢？",a:"施工背心每件 200 元，所有施工人員進出社區須穿著以利識別，向管理中心購買。",cat:"費用",src:"手動"},
+  {q:"電梯保護毯怎麼計費？",a:"搬家時可租用電梯保護毯，每日 100 元，用於保護電梯內裝。建議搬運集中同一日較省。",cat:"費用",src:"手動"},
+  {q:"平日可以施工的時間是幾點到幾點？",a:"平日施工時段為 08:00–12:00 及 13:00–17:00；高噪音施工須在 09:00–12:00、14:00–17:00。每日 17:30 前須清場離場。",cat:"時間",src:"手動"},
+  {q:"週六可以施工嗎？",a:"週六僅能進行「無聲施工」，且須事先向管理中心申請核准。國定假日及週日一律禁止施工。",cat:"時間",src:"手動"},
+  {q:"我家在哪一棟，要用幾號電梯？",a:"請使用本系統「電梯查詢」功能，點選您的棟別即可顯示指定電梯號碼。三期 A–F 棟、四期 G–K 棟各有專屬施工/搬運電梯。",cat:"電梯",src:"手動"},
+  {q:"裝修申請要準備哪些資料？",a:"需填寫裝修申請書、繳交保證金 30,000 元與清潔費 1,000 元、提供設計師/廠商及施工人員名冊，並確認施工電梯與時間後即可開工。",cat:"裝潢",src:"手動"},
+  {q:"如果超時施工或假日施工會怎樣？",a:"違反施工時間規定者，管理中心將先行勸導，屢勸不聽得依規約處置，並可能影響保證金退還。請務必遵守時段規定、17:30 前清場。",cat:"違規",src:"手動"}
+];
+
+const QA_CATS = ["全部","裝潢","搬家","費用","時間","電梯","違規"];
+
+/* ============================================================
+   資料層（Firebase Firestore）— 跨電腦即時同步
+   ============================================================ */
+function today(){ const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCAKzE6eVBLBlB6GVlpmB4FYEynfscrNUk",
+  authDomain: "xinzhisuoxiang-10798.firebaseapp.com",
+  projectId: "xinzhisuoxiang-10798",
+  storageBucket: "xinzhisuoxiang-10798.firebasestorage.app",
+  messagingSenderId: "323957348700",
+  appId: "1:323957348700:web:eb84a73ab111e999494999"
+};
+
+let QAS = [];
+let statCache = {qaSearch:0, flow:0};
+let CLOUD = false;
+let fdb, qaCol, statRef, initRef, INC;
+
+try {
+  if(typeof firebase === 'undefined') throw new Error('Firebase SDK 未載入');
+  firebase.initializeApp(firebaseConfig);
+  fdb = firebase.firestore();
+  qaCol = fdb.collection('qa');
+  statRef = fdb.collection('meta').doc('stats');
+  initRef = fdb.collection('meta').doc('init');
+  INC = n => firebase.firestore.FieldValue.increment(n);
+  CLOUD = true;
+
+  // 首次啟用：把內建 10 筆種子資料寫入雲端（只會執行一次）
+  initRef.get().then(doc=>{
+    if(!doc.exists){
+      const batch = fdb.batch();
+      SEED_QA.forEach(x=>{ const ref=qaCol.doc();
+        batch.set(ref,{q:x.q,a:x.a,cat:x.cat,src:x.src,community:COMMUNITY,created:today(),searches:0}); });
+      batch.set(initRef,{seeded:true,at:today()});
+      batch.set(statRef,{qaSearch:0,flow:0},{merge:true});
+      batch.commit().catch(e=>console.warn('seed失敗',e));
+    }
+  }).catch(e=>console.warn('init讀取失敗',e));
+
+  // 即時同步 QA（任一台新增/修改，所有人立即看到）
+  qaCol.onSnapshot(snap=>{
+    QAS = snap.docs.map(d=>({id:d.id, ...d.data()}));
+    renderQA(); buildChips();
+    const adminOpen = document.getElementById('admin').classList.contains('show');
+    if(adminOpen && !document.getElementById('pane-manage').classList.contains('hide')) renderAdminList();
+    if(adminOpen && !document.getElementById('pane-stat').classList.contains('hide')) renderStats();
+  }, e=>console.warn('QA同步失敗',e));
+
+  // 即時同步統計
+  statRef.onSnapshot(doc=>{
+    if(doc.exists){ statCache = doc.data();
+      if(document.getElementById('admin').classList.contains('show')) renderStats(); }
+  }, e=>console.warn('統計同步失敗',e));
+
+} catch(e){
+  console.warn('雲端未連線，改用唯讀內建資料：', e.message);
+  QAS = SEED_QA.map((x,i)=>({id:"s"+i,...x,community:COMMUNITY,created:today(),searches:0}));
+}
+
+/* ============================================================
+   狀態與導覽
+   ============================================================ */
+let state={type:null,identity:null};
+let navStack=[];
+const TYPE_LABEL={reno:"裝潢施工",move:"搬家申請"};
+const ID_LABEL={resident:"住戶",vendor:"設計師/廠商"};
+
+const NAV_VIEWS=['view-dashboard','view-checklist','view-fee','view-elevator','view-time','view-qa'];
+function show(id,push=true){
+  document.querySelectorAll('section.wrap').forEach(s=>s.classList.add('hide'));
+  const el=document.getElementById(id); el.classList.remove('hide');
+  if(push && navStack[navStack.length-1]!==id) navStack.push(id);
+  document.getElementById('backBtn').classList.toggle('show',id!=='view-home');
+  // 底部導覽列：功能頁才顯示，並標示目前位置
+  const nav=document.getElementById('bottomnav');
+  nav.classList.toggle('hide',!NAV_VIEWS.includes(id));
+  nav.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.v===id));
+  window.scrollTo(0,0);
+}
+function navTo(id){ show(id); }
+function goBack(){
+  navStack.pop();
+  const prev=navStack[navStack.length-1]||'view-home';
+  show(prev,false);
+}
+
+function chooseType(t){
+  state.type=t;
+  document.getElementById('topSub').textContent=TYPE_LABEL[t]+" 辦理導引";
+  document.getElementById('idTitle').textContent="辦理「"+TYPE_LABEL[t]+"」，您的身份是？";
+  show('view-identity');
+}
+function chooseIdentity(idn){
+  state.identity=idn;
+  // 記錄流程使用次數
+  if(CLOUD) statRef.set({flow:INC(1)},{merge:true}).catch(()=>{});
+  buildDashboard(); buildChecklist(); buildFee();
+  show('view-dashboard');
+}
+
+/* ============================================================
+   功能總覽
+   ============================================================ */
+function buildDashboard(){
+  document.getElementById('dashTag').textContent=TYPE_LABEL[state.type]+" · "+ID_LABEL[state.identity];
+  updateProgress();
+}
+
+/* ============================================================
+   待辦清單
+   ============================================================ */
+let clState=[];
+function clKey(){ return "hzsx_cl_"+state.type+"_"+state.identity; }
+function buildChecklist(){
+  const items=CHECKLISTS[state.type][state.identity];
+  const saved=JSON.parse(localStorage.getItem(clKey())||"null");
+  clState = saved && saved.length===items.length ? saved : items.map(()=>false);
+  document.getElementById('clTitle').textContent=TYPE_LABEL[state.type]+" · "+ID_LABEL[state.identity]+" 辦理清單";
+  const ul=document.getElementById('clList'); ul.innerHTML="";
+  items.forEach((it,i)=>{
+    const li=document.createElement('li');
+    li.className=clState[i]?'done':'';
+    li.onclick=()=>toggleCl(i);
+    li.innerHTML=`<div class="chk">${clState[i]?'✓':''}</div>
+      <div class="txt"><div class="h">${it[0]}</div>${it[1]?`<div class="s">${it[1]}</div>`:''}</div>`;
+    ul.appendChild(li);
+  });
+  updateProgress();
+}
+function toggleCl(i){
+  clState[i]=!clState[i];
+  localStorage.setItem(clKey(),JSON.stringify(clState));
+  buildChecklist();
+}
+function updateProgress(){
+  if(!clState.length) return;
+  const done=clState.filter(Boolean).length, total=clState.length;
+  const pct=Math.round(done/total*100);
+  const bar=document.getElementById('clBar'); if(bar)bar.style.width=pct+"%";
+  const lbl=document.getElementById('clLabel'); if(lbl)lbl.textContent=`${done} / ${total} 完成`;
+  document.getElementById('clDone').classList.toggle('hide',done!==total);
+  const db=document.getElementById('dashBar'); if(db)db.style.width=pct+"%";
+  const dp=document.getElementById('dashProg'); if(dp)dp.textContent= done===0?"尚未開始":(done===total?"🎉 全部完成！":`已完成 ${done}/${total} 項（${pct}%）`);
+}
+
+/* ============================================================
+   費用一覽
+   ============================================================ */
+function buildFee(){
+  const f=FEES[state.type];
+  document.getElementById('feeLead').textContent=f.lead;
+  const box=document.getElementById('feeList'); box.innerHTML="";
+  f.items.forEach(it=>{
+    const d=document.createElement('div');
+    d.className='fee'+(it.alt?' alt':'');
+    d.innerHTML=`<div class="lbl">${it.lbl}<small>${it.sub}</small></div>
+      <div class="num">${it.num}<small> ${it.unit}</small></div>`;
+    box.appendChild(d);
+  });
+  document.getElementById('feeNote').textContent=f.note;
+}
+
+/* ============================================================
+   電梯查詢
+   ============================================================ */
+function buildElevator(){
+  const p3=document.getElementById('bldP3'), p4=document.getElementById('bldP4');
+  p3.innerHTML="";p4.innerHTML="";
+  Object.keys(ELEVATORS.P3).forEach(b=>{
+    const d=document.createElement('div'); d.className='bld'; d.textContent=b;
+    d.onclick=()=>showEle('P3',b,d); p3.appendChild(d);
+  });
+  Object.keys(ELEVATORS.P4).forEach(b=>{
+    const d=document.createElement('div'); d.className='bld'; d.textContent=b;
+    d.onclick=()=>showEle('P4',b,d); p4.appendChild(d);
+  });
+}
+function showEle(phase,b,el){
+  document.querySelectorAll('.bld').forEach(x=>x.classList.remove('on'));
+  el.classList.add('on');
+  const nums=ELEVATORS[phase][b];
+  const r=document.getElementById('eleResult');
+  r.classList.remove('hide');
+  r.innerHTML=`<div class="cap">${b} 棟（${phase==='P3'?'三期':'四期'}）指定電梯</div>`+
+    nums.map(n=>`<span class="ele-num">${n} 號</span>`).join("")+
+    `<div class="cap" style="margin-top:8px">搬運/施工請使用以上電梯，並鋪設保護毯</div>`;
+}
+
+/* ============================================================
+   施工時間週曆
+   ============================================================ */
+function buildCal(){
+  const days=[["一","work","可施工"],["二","work","可施工"],["三","work","可施工"],
+    ["四","work","可施工"],["五","work","可施工"],["六","sat","無聲申請"],["日","sun","禁止"]];
+  const g=document.getElementById('calGrid'); g.innerHTML="";
+  days.forEach(d=>{
+    const e=document.createElement('div'); e.className='d '+d[1];
+    e.innerHTML=`<span class="dn">${d[0]}</span>${d[2]}`; g.appendChild(e);
+  });
+}
+
+/* ============================================================
+   QA 搜尋（模糊）
+   ============================================================ */
+let qaCat="全部";
+function buildChips(){
+  const c=document.getElementById('qaChips'); c.innerHTML="";
+  QA_CATS.forEach(cat=>{
+    const s=document.createElement('span'); s.className='chip'+(cat===qaCat?' on':'');
+    s.textContent=cat; s.onclick=()=>{qaCat=cat;buildChips();renderQA();};
+    c.appendChild(s);
+  });
+}
+function fuzzy(text,kw){
+  text=text.toLowerCase(); kw=kw.toLowerCase().trim();
+  if(!kw) return true;
+  // 任一關鍵字（空白分隔）命中即算 + 逐字模糊
+  const parts=kw.split(/\s+/);
+  return parts.some(p=>{
+    if(text.includes(p)) return true;
+    // 逐字鬆散比對（容錯）
+    let idx=0; for(const ch of p){ idx=text.indexOf(ch,idx); if(idx<0)return false; idx++; } return true;
+  });
+}
+let lastSearchKw="";
+function renderQA(){
+  const kw=document.getElementById('qaSearch').value;
+  const list=document.getElementById('qaList');
+  let res=QAS.filter(x=>x.community===COMMUNITY);
+  if(qaCat!=="全部") res=res.filter(x=>x.cat===qaCat);
+  if(kw.trim()) res=res.filter(x=>fuzzy(x.q+" "+x.a+" "+x.cat,kw));
+  // 記錄搜尋次數（去抖：關鍵字變化且長度>=1）
+  if(kw.trim() && kw.trim()!==lastSearchKw){
+    lastSearchKw=kw.trim();
+    clearTimeout(window._stt);
+    window._stt=setTimeout(()=>{
+      if(!CLOUD) return;
+      statRef.set({qaSearch:INC(1)},{merge:true}).catch(()=>{});
+      // 命中題目各加搜尋次數（最多前 8 筆，避免一次寫太多）
+      res.slice(0,8).forEach(r=>qaCol.doc(r.id).update({searches:INC(1)}).catch(()=>{}));
+    },900);
+  }
+  if(!res.length){ list.innerHTML=`<div class="empty">找不到相關問題 😶<br>換個關鍵字，或到後台新增這題。</div>`; return; }
+  list.innerHTML="";
+  res.forEach(x=>{
+    const d=document.createElement('div'); d.className='qa-item';
+    d.innerHTML=`<div class="qa-q" onclick="this.parentNode.classList.toggle('open')">
+        <span>${x.q}</span><span class="arrow">▾</span></div>
+      <div class="qa-a">${x.a}<br><span class="qa-cat">${x.cat}</span></div>`;
+    list.appendChild(d);
+  });
+}
+
+/* ============================================================
+   後台
+   ============================================================ */
+function openAdminGate(){ document.getElementById('gate').classList.add('show'); document.getElementById('gatePw').value=""; setTimeout(()=>document.getElementById('gatePw').focus(),100); }
+function closeModal(id){ document.getElementById(id).classList.remove('show'); }
+function tryLogin(){
+  if(document.getElementById('gatePw').value===ADMIN_PW){
+    closeModal('gate'); document.getElementById('admin').classList.add('show');
+    adminTab('add'); renderStats();
+  } else toast("密碼錯誤");
+}
+function adminTab(t){
+  ['add','manage','stat'].forEach(x=>{
+    document.getElementById('tab-'+x).classList.toggle('on',x===t);
+    document.getElementById('pane-'+x).classList.toggle('hide',x!==t);
+  });
+  if(t==='manage') renderAdminList();
+  if(t==='stat') renderStats();
+}
+
+/* 來源切換 */
+let curSrc="手動";
+function pickSrc(btn){
+  document.querySelectorAll('.src-pick button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on'); curSrc=btn.dataset.src;
+  document.getElementById('srcVoice').classList.toggle('hide',curSrc!=="語音");
+  document.getElementById('srcShot').classList.toggle('hide',curSrc!=="截圖");
+}
+function previewShot(input){
+  const img=document.getElementById('shotPreview');
+  if(input.files&&input.files[0]){ const r=new FileReader();
+    r.onload=e=>{img.src=e.target.result;img.style.display='block';}; r.readAsDataURL(input.files[0]); }
+}
+
+/* 語音輸入（瀏覽器內建 Web Speech API，免費） */
+let recog=null,recording=false;
+function toggleRec(){
+  const Btn=document.getElementById('recBtn');
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){ toast("此瀏覽器不支援語音，請用 Chrome"); return; }
+  if(!recording){
+    recog=new SR(); recog.lang="zh-TW"; recog.interimResults=false;
+    recog.onresult=e=>{ const t=e.results[0][0].transcript;
+      const q=document.getElementById('fQ'); q.value=(q.value?q.value+" ":"")+t; };
+    recog.onend=()=>{ recording=false; Btn.textContent="🎤 開始語音輸入（說出問題）"; Btn.classList.remove('rec-on'); };
+    recog.start(); recording=true; Btn.textContent="⏹ 停止錄音（聆聽中…）"; Btn.classList.add('rec-on');
+  } else { recog.stop(); }
+}
+
+/* 儲存 / 編輯 QA */
+let editId=null;
+function saveQA(){
+  const q=document.getElementById('fQ').value.trim();
+  const a=document.getElementById('fA').value.trim();
+  if(!q||!a){ toast("問題與答案都要填"); return; }
+  const cat=document.getElementById('fCat').value;
+  const comm=document.getElementById('fComm').value;
+  if(!CLOUD){ toast("目前未連雲端，無法儲存"); return; }
+  if(editId){
+    qaCol.doc(editId).update({q,a,cat,community:comm}).then(()=>toast("已更新")).catch(()=>toast("更新失敗"));
+    editId=null;
+  } else {
+    qaCol.add({q,a,cat,src:curSrc,community:comm,created:today(),searches:0})
+      .then(()=>toast("已新增 QA")).catch(()=>toast("新增失敗"));
+  }
+  document.getElementById('fQ').value="";document.getElementById('fA').value="";
+  document.getElementById('shotPreview').style.display='none';
+  // 畫面由即時同步自動更新
+}
+function renderAdminList(){
+  const kw=(document.getElementById('adminSearch').value||"").toLowerCase();
+  const box=document.getElementById('adminList'); box.innerHTML="";
+  let list=QAS.filter(x=>!kw||(x.q+x.a).toLowerCase().includes(kw));
+  if(!list.length){ box.innerHTML=`<div class="empty">沒有資料</div>`; return; }
+  list.slice().reverse().forEach(x=>{
+    const d=document.createElement('div'); d.className='admin-qa';
+    d.innerHTML=`<div class="q">${x.q}</div>
+      <div class="meta">${x.cat} · 來源:${x.src||'-'} · 建立:${x.created||'-'} · 被搜尋 ${x.searches||0} 次</div>
+      <div class="acts"><button class="act-edit" onclick="editQA('${x.id}')">編輯</button>
+      <button class="act-del" onclick="delQA('${x.id}')">刪除</button></div>`;
+    box.appendChild(d);
+  });
+}
+function editQA(id){
+  const t=QAS.find(x=>x.id===id); if(!t)return;
+  editId=id; adminTab('add');
+  document.getElementById('fQ').value=t.q; document.getElementById('fA').value=t.a;
+  document.getElementById('fCat').value=t.cat; document.getElementById('fComm').value=t.community;
+  toast("編輯中，改完按儲存");
+}
+function delQA(id){
+  if(!confirm("確定刪除這題？")) return;
+  if(!CLOUD){ toast("目前未連雲端"); return; }
+  qaCol.doc(id).delete().then(()=>toast("已刪除")).catch(()=>toast("刪除失敗"));
+  // 畫面由即時同步自動更新
+}
+function renderStats(){
+  document.getElementById('stTotal').textContent=QAS.length;
+  document.getElementById('stSearch').textContent=statCache.qaSearch||0;
+  document.getElementById('stFlow').textContent=statCache.flow||0;
+  const sorted=QAS.slice().sort((a,b)=>(b.searches||0)-(a.searches||0));
+  document.getElementById('stHot').textContent=(sorted[0]&&sorted[0].searches)?(sorted[0].searches+"次"):"—";
+  const box=document.getElementById('statList'); box.innerHTML="";
+  sorted.slice(0,6).forEach(x=>{
+    const d=document.createElement('div'); d.className='admin-qa';
+    d.innerHTML=`<div class="q">${x.q}</div><div class="meta">${x.cat} · 被搜尋 <b style="color:var(--orange)">${x.searches||0}</b> 次</div>`;
+    box.appendChild(d);
+  });
+}
+
+/* Toast */
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(window._toast); window._toast=setTimeout(()=>t.classList.remove('show'),1800); }
+
+/* ============================================================
+   初始化
+   ============================================================ */
+buildElevator(); buildCal(); buildChips(); renderQA();
+show('view-home',false); navStack=['view-home'];
+</script>
+</body>
+</html>
