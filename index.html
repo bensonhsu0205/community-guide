@@ -836,6 +836,13 @@ function fuzzy(text,kw){
     let idx=0; for(const ch of p){ idx=text.indexOf(ch,idx); if(idx<0)return false; idx++; } return true;
   });
 }
+// 點開一題時，自動收合其他題（手風琴）
+function toggleQA(el){
+  const item=el.parentNode;
+  const wasOpen=item.classList.contains('open');
+  document.querySelectorAll('#qaList .qa-item.open').forEach(x=>x.classList.remove('open'));
+  if(!wasOpen) item.classList.add('open');
+}
 let lastSearchKw="";
 function renderQA(){
   const kw=document.getElementById('qaSearch').value;
@@ -858,7 +865,7 @@ function renderQA(){
   list.innerHTML="";
   res.forEach(x=>{
     const d=document.createElement('div'); d.className='qa-item';
-    d.innerHTML=`<div class="qa-q" onclick="this.parentNode.classList.toggle('open')">
+    d.innerHTML=`<div class="qa-q" onclick="toggleQA(this)">
         <span>${x.q}</span><span class="arrow">▾</span></div>
       <div class="qa-a">${x.a}<br><span class="qa-cat">${x.cat}</span></div>`;
     list.appendChild(d);
