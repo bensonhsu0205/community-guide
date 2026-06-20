@@ -26,6 +26,30 @@ html,body{background:var(--cream);color:var(--ink);
 body{padding-bottom:74px}
 .app{max-width:520px;margin:0 auto;min-height:100vh;position:relative}
 
+/* 桌機放大：電腦螢幕時整體放大，手機維持原樣 */
+@media (min-width:760px){
+  .app{zoom:1.45}
+  .bottomnav{zoom:1.45}
+  .modal .box{zoom:1.4}
+  .toast{zoom:1.4}
+}
+@media (min-width:1300px){
+  .app{zoom:1.7}
+  .bottomnav{zoom:1.7}
+  .modal .box{zoom:1.55}
+}
+
+/* 首頁：常見問題獨立入口 */
+.or-sep{text-align:center;color:var(--grey);font-size:13px;margin:20px 0 4px}
+.qa-entry{display:flex;align-items:center;gap:14px;background:#fff;border:2px solid var(--navy);
+  border-radius:16px;padding:18px;margin-top:6px;cursor:pointer;box-shadow:0 4px 18px rgba(26,60,94,.10);transition:.15s}
+.qa-entry:active{transform:scale(.98)}
+.qa-entry .qe-ico{font-size:30px;flex:0 0 auto}
+.qa-entry .qe-txt{flex:1;display:flex;flex-direction:column}
+.qa-entry .qe-txt b{color:var(--navy);font-size:16.5px}
+.qa-entry .qe-txt small{color:var(--grey);font-size:12.5px;margin-top:2px}
+.qa-entry .qe-arrow{color:var(--orange);font-size:26px;font-weight:900;flex:0 0 auto}
+
 /* ===== 頂部 ===== */
 header.top{background:var(--navy);color:#fff;padding:18px 20px 16px;
   position:sticky;top:0;z-index:50;box-shadow:var(--shadow)}
@@ -96,6 +120,20 @@ header.top{background:var(--navy);color:#fff;padding:18px 20px 16px;
 .progress-label{font-size:13px;color:var(--navy);font-weight:700;text-align:right}
 .done-banner{background:#eaf7f0;border:1px solid var(--green);color:var(--green);
   border-radius:12px;padding:12px;text-align:center;font-weight:800;margin-top:12px}
+/* 送件指引卡片 */
+.submit-card{margin-top:14px;border:2px solid var(--orange);border-radius:14px;overflow:hidden}
+.submit-card .sc-head{background:var(--orange);color:#fff;padding:13px 16px;font-weight:800;font-size:15.5px}
+.submit-card .sc-body{padding:14px 16px;background:#fff}
+.submit-card .sc-row{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px dashed var(--line)}
+.submit-card .sc-row:last-of-type{border-bottom:none}
+.submit-card .sc-ico{flex:0 0 auto;font-size:18px;width:24px;text-align:center}
+.submit-card .sc-row .k{font-size:12px;color:var(--grey)}
+.submit-card .sc-row .v{font-size:15px;font-weight:700;color:var(--navy)}
+.submit-card .sc-row .v a{color:var(--orange);text-decoration:none}
+.submit-card .sc-note{background:#fff8ef;border-radius:10px;padding:10px 12px;font-size:13px;
+  color:#7a4a25;margin-top:10px;font-weight:600}
+.submit-card .sc-btn{display:block;text-align:center;background:var(--navy);color:#fff;
+  text-decoration:none;padding:13px;border-radius:11px;font-weight:800;margin-top:12px;font-size:15px}
 
 /* 費用大數字 */
 .fee{display:flex;align-items:center;justify-content:space-between;
@@ -241,6 +279,12 @@ header.top{background:var(--navy);color:#fff;padding:18px 20px 16px;
       <div class="ico">📦</div><div class="t">搬家申請</div><div class="d">搬入 / 搬出</div>
     </div>
   </div>
+  <div class="or-sep">— 已經申請過，或只想問問題？ —</div>
+  <div class="qa-entry" onclick="openQAHome()">
+    <span class="qe-ico">💬</span>
+    <span class="qe-txt"><b>常見問題搜尋</b><small>不用申請，直接查費用、電梯、施工時間等問題</small></span>
+    <span class="qe-arrow">›</span>
+  </div>
 </section>
 
 <!-- ========== 選身份 ========== -->
@@ -282,7 +326,7 @@ header.top{background:var(--navy);color:#fff;padding:18px 20px 16px;
     <div class="progress-bar"><i id="clBar"></i></div>
     <div class="progress-label" id="clLabel">0 / 0 完成</div>
     <ul class="todo" id="clList"></ul>
-    <div class="done-banner hide" id="clDone">🎉 全部完成！可以準備送件囉</div>
+    <div class="hide" id="clDone"></div>
   </div>
 </section>
 
@@ -445,6 +489,15 @@ header.top{background:var(--navy);color:#fff;padding:18px 20px 16px;
 /* ---------- 設定 ---------- */
 const ADMIN_PW = "1688";          // ← 後台密碼，請自行修改
 const COMMUNITY = "心之所向";
+
+/* ---------- 送件資訊（清單完成後的下一步指引） ---------- */
+const SUBMIT_INFO = {
+  place: "各期一樓管理中心櫃檯",
+  phone: "04-12345678",     // ← 電話，請自行修改
+  hours: "09:00–17:00",
+  days: 5,                   // 審核工作天
+  formUrl: ""                // 申請書電子檔連結；填網址後會出現「下載申請書」按鈕
+};
 
 /* ---------- 電梯資料（A–K 棟） ---------- */
 const ELEVATORS = {
@@ -613,6 +666,12 @@ function show(id,push=true){
   window.scrollTo(0,0);
 }
 function navTo(id){ show(id); }
+// 首頁直接進「常見問題」（不需選申請類型，底部分頁列隱藏）
+function openQAHome(){
+  navStack=['view-home'];
+  show('view-qa');
+  document.getElementById('bottomnav').classList.add('hide');
+}
 function goBack(){
   navStack.pop();
   const prev=navStack[navStack.length-1]||'view-home';
@@ -673,9 +732,29 @@ function updateProgress(){
   const pct=Math.round(done/total*100);
   const bar=document.getElementById('clBar'); if(bar)bar.style.width=pct+"%";
   const lbl=document.getElementById('clLabel'); if(lbl)lbl.textContent=`${done} / ${total} 完成`;
-  document.getElementById('clDone').classList.toggle('hide',done!==total);
+  const cd=document.getElementById('clDone');
+  cd.classList.toggle('hide',done!==total);
+  if(done===total) cd.innerHTML=submitGuideHTML();
   const db=document.getElementById('dashBar'); if(db)db.style.width=pct+"%";
   const dp=document.getElementById('dashProg'); if(dp)dp.textContent= done===0?"尚未開始":(done===total?"🎉 全部完成！":`已完成 ${done}/${total} 項（${pct}%）`);
+}
+function submitGuideHTML(){
+  const s=SUBMIT_INFO;
+  const formBtn = s.formUrl
+    ? `<a class="sc-btn" href="${s.formUrl}" target="_blank">📄 下載申請書電子檔</a>`
+    : `<div class="sc-note">📄 申請書電子檔：請向管理中心索取（設定下載連結後，這裡會出現下載按鈕）</div>`;
+  return `
+  <div class="done-banner" style="margin-bottom:12px">🎉 清單都完成了！剩最後一步：送件</div>
+  <div class="submit-card">
+    <div class="sc-head">📍 下一步：帶齊資料到管理中心送件</div>
+    <div class="sc-body">
+      <div class="sc-row"><div class="sc-ico">🏢</div><div><div class="k">送件地點</div><div class="v">${s.place}</div></div></div>
+      <div class="sc-row"><div class="sc-ico">📞</div><div><div class="k">聯絡電話</div><div class="v"><a href="tel:${s.phone.replace(/[^0-9+]/g,'')}">${s.phone}</a></div></div></div>
+      <div class="sc-row"><div class="sc-ico">🕘</div><div><div class="k">受理時間</div><div class="v">${s.hours}</div></div></div>
+      <div class="sc-row"><div class="sc-ico">📋</div><div><div class="k">審核時間</div><div class="v">約 ${s.days} 個工作天，核准後才可開工</div></div></div>
+      ${formBtn}
+    </div>
+  </div>`;
 }
 
 /* ============================================================
