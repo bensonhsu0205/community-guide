@@ -242,6 +242,16 @@ header.top{background:var(--navy);color:#fff;padding:18px 20px 16px;
 .preview-img{max-width:100%;border-radius:10px;margin-top:8px;display:none}
 .rec-on{color:#c0392b!important;border-color:#c0392b!important}
 .footer-note{font-size:11px;color:#c3bdb0;text-align:center;padding:0 20px 10px}
+/* 版本紀錄 */
+.ver-now{background:var(--navy);color:#fff;border-radius:12px;padding:14px 16px;font-size:14px;font-weight:700}
+.ver-now b{font-size:20px;color:#fff;margin-left:4px}
+.ver-item{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:9px}
+.ver-item .vh{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.ver-item .vtag{background:var(--orange);color:#fff;font-size:13px;font-weight:800;padding:2px 10px;border-radius:20px}
+.ver-item .vtag.cur{background:var(--green)}
+.ver-item .vdate{font-size:12px;color:var(--grey)}
+.ver-item ul{margin:0;padding-left:18px}
+.ver-item li{font-size:13.5px;color:#444;margin:3px 0}
 /* 底部導覽列 */
 .bottomnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;
   max-width:520px;background:#fff;border-top:1px solid var(--line);display:flex;z-index:60;
@@ -385,7 +395,7 @@ header.top{background:var(--navy);color:#fff;padding:18px 20px 16px;
 
 <!-- ========== 後台入口 ========== -->
 <div class="admin-link" onclick="openAdminGate()">· 管理後台 ·</div>
-<div class="footer-note">心之所向社區 · 申請導引系統 v1（雲端同步）</div>
+<div class="footer-note" id="footerNote">心之所向社區 · 申請導引系統（雲端同步）</div>
 
 </div><!-- /app -->
 
@@ -420,6 +430,7 @@ header.top{background:var(--navy);color:#fff;padding:18px 20px 16px;
       <button class="on" id="tab-add" onclick="adminTab('add')">新增QA</button>
       <button id="tab-manage" onclick="adminTab('manage')">管理QA</button>
       <button id="tab-stat" onclick="adminTab('stat')">統計</button>
+      <button id="tab-version" onclick="adminTab('version')">版本</button>
     </div>
 
     <!-- 新增 QA -->
@@ -471,6 +482,13 @@ header.top{background:var(--navy);color:#fff;padding:18px 20px 16px;
       <div class="section-title" style="font-size:14px">各分類熱門搜尋</div>
       <div id="statList"></div>
     </div>
+
+    <!-- 版本紀錄 -->
+    <div id="pane-version" class="hide">
+      <div class="ver-now">目前版本　<b id="verNow">v1.5</b></div>
+      <div class="lead" style="font-size:13px;margin:10px 0 14px">每次更新的修正內容如下，最新的在最上面。</div>
+      <div id="verList"></div>
+    </div>
   </div>
 </div>
 
@@ -489,6 +507,17 @@ header.top{background:var(--navy);color:#fff;padding:18px 20px 16px;
 /* ---------- 設定 ---------- */
 const ADMIN_PW = "1688";          // ← 後台密碼，請自行修改
 const COMMUNITY = "心之所向";
+
+/* ---------- 版本紀錄（最新的放最上面） ---------- */
+const VERSION = "1.5";
+const CHANGELOG = [
+  {v:"1.5", date:"2026-06-20", notes:["問答改成手風琴：點開一題會自動收合其他題"]},
+  {v:"1.4", date:"2026-06-20", notes:["電腦開啟自動放大、字更清楚","首頁新增「常見問題」獨立入口，不用申請也能直接查"]},
+  {v:"1.3", date:"2026-06-20", notes:["辦理清單全部完成後，顯示「送件指引」卡片（地點/電話/時間/審核天數）"]},
+  {v:"1.2", date:"2026-06-20", notes:["新增底部分頁列，可直接切換清單/費用/電梯/時間/問答","新增返回鍵"]},
+  {v:"1.1", date:"2026-06-20", notes:["接上 Firebase 雲端，多台電腦即時同步、統計加總"]},
+  {v:"1.0", date:"2026-06-20", notes:["系統上線：申請導引、費用、電梯查詢、施工時間、問答搜尋、管理後台"]}
+];
 
 /* ---------- 送件資訊（清單完成後的下一步指引） ---------- */
 const SUBMIT_INFO = {
@@ -884,12 +913,24 @@ function tryLogin(){
   } else toast("密碼錯誤");
 }
 function adminTab(t){
-  ['add','manage','stat'].forEach(x=>{
+  ['add','manage','stat','version'].forEach(x=>{
     document.getElementById('tab-'+x).classList.toggle('on',x===t);
     document.getElementById('pane-'+x).classList.toggle('hide',x!==t);
   });
   if(t==='manage') renderAdminList();
   if(t==='stat') renderStats();
+  if(t==='version') renderVersion();
+}
+function renderVersion(){
+  document.getElementById('verNow').textContent="v"+VERSION;
+  const box=document.getElementById('verList'); box.innerHTML="";
+  CHANGELOG.forEach((c,i)=>{
+    const d=document.createElement('div'); d.className='ver-item';
+    d.innerHTML=`<div class="vh"><span class="vtag${i===0?' cur':''}">v${c.v}${i===0?' 最新':''}</span>`+
+      `<span class="vdate">${c.date}</span></div>`+
+      `<ul>${c.notes.map(n=>`<li>${n}</li>`).join("")}</ul>`;
+    box.appendChild(d);
+  });
 }
 
 /* 來源切換 */
@@ -990,6 +1031,7 @@ function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg
    初始化
    ============================================================ */
 buildElevator(); buildCal(); buildChips(); renderQA();
+document.getElementById('footerNote').textContent="心之所向社區 · 申請導引系統 v"+VERSION+"（雲端同步）";
 show('view-home',false); navStack=['view-home'];
 </script>
 </body>
